@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  orderservice:
+    build:
+      context: ./OrderService
+    container_name: orderservice-container
+    ports:
+      - '5064:5064'
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5064
+    working_dir: /app
+    command: dotnet run
