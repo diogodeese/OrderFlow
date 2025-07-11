@@ -1,18 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using OrderService.Data;
+using OrderService.Controllers;
+using OrderService.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Register EF Core Context
+builder.Services.AddDbContext<OrderDbContext>(options =>
+    options.UseSqlite("Data Source=orders.db"));
+
+builder.Services.AddScoped<IOrderService, OrderService.Services.OrderService>();
+
+// Add other services (CORS, Swagger, etc.)
+// builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-var orders = new List<object>
+// Endpoints
+app.MapGet("/", () => "OrderService Running");
+
+app.MapGroup("/orders").MapOrderRoutes();
+
+app.Urls.Add("http://0.0.0.0:5064");
+
+using (var scope = app.Services.CreateScope())
 {
-    new { Id = 1, Customer = "Catarina", Total = 150.50, Status = "Pending" },
-    new { Id = 2, Customer = "Diogo", Total = 80.00, Status = "Shipped" }
-};
-
-app.MapGet("/", () => "Order Service is running 🚀");
-
-app.MapGet("/orders", () => orders);
+    var db = scope.ServiceProvider.GetRequiredService<OrderDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.Run();
