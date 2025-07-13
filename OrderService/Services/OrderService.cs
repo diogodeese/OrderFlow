@@ -20,7 +20,7 @@ namespace OrderService.Services
 
         public Task<Order?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return _context.Orders.FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<Order> CreateAsync(Order order)
@@ -30,14 +30,26 @@ namespace OrderService.Services
             return order;
         }
 
-        public Task<bool> UpdateAsync(int id, Order updatedOrder)
+        public async Task<bool> UpdateAsync(int id, Order updatedOrder)
         {
-            throw new NotImplementedException();
+            var updatedCount = await _context.Orders
+                .Where(o => o.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(o => o.Customer, updatedOrder.Customer)
+                    .SetProperty(o => o.Total, updatedOrder.Total)
+                    .SetProperty(o => o.Status, updatedOrder.Status)
+                );
+
+            return updatedCount > 0;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var rowsAffected = await _context.Orders
+                .Where(o => o.Id == id)
+                .ExecuteDeleteAsync();
+
+            return rowsAffected > 0;
         }
     }
 }
