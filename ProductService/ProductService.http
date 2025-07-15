@@ -1,0 +1,41 @@
+@ProductService_HostAddress = http://localhost:5070
+
+### Create a new order
+POST {{ProductService_HostAddress}}/products/
+Content-Type: application/json
+
+{
+  "name": "Hoodie",
+  "price": 29.99,
+  "stock": 40
+}
+
+###
+
+### Get all products
+GET {{ProductService_HostAddress}}/products/
+Accept: application/json
+
+###
+
+### Get order by ID
+GET {{ProductService_HostAddress}}/products/1
+Accept: application/json
+
+###
+
+### Update an order
+PUT {{ProductService_HostAddress}}/products/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "T-shirt",
+  "price": 19.99,
+  "stock": 20,
+}
+
+###
+
+### Delete an order
+DELETE {{ProductService_HostAddress}}/products/1
