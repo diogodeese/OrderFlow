@@ -6,8 +6,34 @@ services:
       context: ./OrderService
     container_name: orderservice-container
     ports:
-      - '5064:5064'
+      - '${ORDER_SERVICE_PORT}:${ORDER_SERVICE_PORT}'
     environment:
-      - ASPNETCORE_URLS=http://0.0.0.0:5064
+      - ASPNETCORE_URLS=http://0.0.0.0:${ORDER_SERVICE_PORT}
+      - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT}
     working_dir: /app
     command: dotnet run
+    depends_on:
+      - rabbitmq
+
+  productservice:
+    build:
+      context: ./ProductService
+    container_name: productservice-container
+    ports:
+      - '${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}'
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:${PRODUCT_SERVICE_PORT}
+      - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT}
+    working_dir: /app
+    command: dotnet run
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '${RABBITMQ_PORT}:5672'
+      - '${RABBITMQ_MANAGEMENT_PORT}:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
