@@ -7,4 +7,5 @@ public class Order
     public double Total { get; set; }
     public string Status { get; set; } = "Pending";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<OrderItem> Items { get; set; } = new();
 }

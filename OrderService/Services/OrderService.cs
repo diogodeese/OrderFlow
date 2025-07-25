@@ -27,7 +27,7 @@ namespace OrderService.Services
 
         public Task<List<Order>> GetAllAsync()
         {
-            return _context.Orders.ToListAsync();
+            return _context.Orders.Include(o => o.Items).ToListAsync();
         }
 
         public Task<Order?> GetByIdAsync(int id)
@@ -37,15 +37,22 @@ namespace OrderService.Services
 
         public async Task<bool> UpdateAsync(int id, Order updatedOrder)
         {
-            int updatedCount = await _context.Orders
-                .Where(o => o.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(o => o.Customer, updatedOrder.Customer)
-                    .SetProperty(o => o.Total, updatedOrder.Total)
-                    .SetProperty(o => o.Status, updatedOrder.Status)
-                );
+            var existingOrder = await _context.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
-            return updatedCount > 0;
+            if (existingOrder == null)
+                return false;
+
+            existingOrder.Customer = updatedOrder.Customer;
+            existingOrder.Total = updatedOrder.Total;
+            existingOrder.Status = updatedOrder.Status;
+
+            _context.OrderItems.RemoveRange(existingOrder.Items);
+            existingOrder.Items = updatedOrder.Items;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteAsync(int id)

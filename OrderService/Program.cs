@@ -8,7 +8,6 @@ using OrderService.Messaging;
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("ORDER_SERVICE_PORT") ?? "5064";
 
-// Register EF Core Context
 builder.Services.AddDbContext<OrderDbContext>(options =>
     options.UseSqlite("Data Source=orders.db"));
 
