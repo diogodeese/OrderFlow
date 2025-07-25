@@ -7,9 +7,8 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PRODUCT_SERVICE_PORT") ?? "5070";
 
-// Register EF Core Context
 builder.Services.AddDbContext<ProductDbContext>(options =>
-    options.UseSqlite("Data Source=orders.db"));
+    options.UseSqlite("Data Source=products.db"));
 
 builder.Services.AddScoped<IProductService, ProductService.Services.ProductService>();
 
