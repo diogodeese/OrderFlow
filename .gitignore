@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Ignore all database files in Data folder
+Data/*.db
+
 # User-specific files
 *.rsuser
 *.suo

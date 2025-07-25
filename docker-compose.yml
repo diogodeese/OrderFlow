@@ -10,6 +10,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:${ORDER_SERVICE_PORT}
       - ORDER_SERVICE_PORT=${ORDER_SERVICE_PORT}
+    volumes:
+      - ./data/orders.db:/app/orders.db
     working_dir: /app
     command: dotnet run
     depends_on:
@@ -24,6 +26,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://0.0.0.0:${PRODUCT_SERVICE_PORT}
       - PRODUCT_SERVICE_PORT=${PRODUCT_SERVICE_PORT}
+    volumes:
+      - ./data/products.db:/app/products.db
     working_dir: /app
     command: dotnet run
     depends_on:
