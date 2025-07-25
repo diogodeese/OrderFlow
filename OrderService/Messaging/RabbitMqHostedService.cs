@@ -46,7 +46,7 @@ namespace OrderService.Messaging
                     Console.WriteLine("✅ Connected to RabbitMQ.");
                     return;
                 }
-                catch (BrokerUnreachableException ex)
+                catch (BrokerUnreachableException)
                 {
                     Console.WriteLine($"⏳ RabbitMQ not ready. Retry {i + 1}/{retries} in {delaySeconds}s...");
                     await Task.Delay(TimeSpan.FromSeconds(delaySeconds), cancellationToken);
